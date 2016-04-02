@@ -73,7 +73,7 @@ My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centi
 \begin{figure}[!h]
 \begin{mdframed}
 \centering
-\includegraphics[width=0.95\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
+\includegraphics[width=0.85\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
 \caption[Photo of the stereo webcams used for real time processing]{Photo of the left and right stereo webcams used for real time processing}
 \label{fig:cam}
 \end{mdframed}
@@ -81,7 +81,7 @@ My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centi
 
 
 Figure \ref{fig:image1} shows two images of me in captured from the webcams. To see the results for these images, refer to Figure \ref{fig:image2}.
-This is a picture of me, from about 10 feet away.
+This is a picture of me, from about 10 feet away.\\
 
 \begin{figure}[!h]
 \begin{mdframed}
@@ -122,6 +122,7 @@ The disparity maps produced by this technique can be noisy, and we apply filteri
 %
 A median filter works by applying a particular type of edge preserving averaging to pixels. Median filtering is quite simple, requiring two steps per output location:
 
+\newpage
 \begin{enumerate}
 \item sort the samples in the input window by magnitude
 \item take the median sample value as the output value
@@ -206,19 +207,14 @@ The noise reducing effects of a median filter are evident.}
 \end{mdframed}
 \end{figure}
 
-\newpage
 \subsection{Return the final disparity map}
 
 The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[5pt]
 %
-There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. \\[5pt]
-%
-Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer. 
-
-\newpage
+There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing.\\
+Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer.
 The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. See Figure \ref{fig:result1} for a result comparison.
-
-\begin{figure}[!h]
+\begin{figure}
 \begin{mdframed}
 \centering
 \setlength\tabcolsep{0.005\textwidth}
@@ -226,12 +222,13 @@ The laser result is crisper, but it takes much longer to generate. The stereo ma
 \includegraphics[width=0.33\textwidth]{images/_im0-600.jpg} &
 \includegraphics[width=0.33\textwidth]{images/disp0GT-600.jpg} &
 \includegraphics[width=0.33\textwidth]{images/_disp-600.jpg} \\[2pt]
-a) & b) & c) \\
 \end{tabular}
-\caption[Comparison of laser and stereo derived disparity maps]{Comparison of laser and stereo derived disparity maps: a) Original image b) Laser result c) Disparity Matching result.}
+\caption[Comparison of laser and stereo derived disparity maps]{Comparison of laser and stereo derived disparity maps: left) Original image center) Laser result right) Disparity Matching result.}
 \label{fig:result1}
 \end{mdframed}
 \end{figure}
+\newpage
+Here are some results from my experiment, taken with web cams from my setup. Refer to Figure \ref{fig:cam} to see the details of my Stereo Vision setup.
 
 \begin{figure}[!h]
 \begin{mdframed}
