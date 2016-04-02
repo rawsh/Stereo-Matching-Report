@@ -43,7 +43,7 @@ This method is fast enough to work in real time, and is what I am presenting in 
 
 Imagine driving in the dark, alert but not noticing a deer crossing the road right in front of you. Using stereo vision methods to see what is close, your car could detect the deer and brake before you even notice the obstacle. Stereo cameras could find distances, and sensing something closer than 20 feet, send the location to a computer controlling the car. The computer could reason that driving into the obstacle would be catastrophic and turn on the brakes. The deer, and you, would be safe.
 
-\subsection{What is Stereo Vision}
+\subsection{What is stereo vision}
 
 Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels indicaring smaller distance than darker pixels. This type of image is called a \texttt{disparity map}. With proper normalization, a \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example of a disparity map.
 
@@ -88,7 +88,6 @@ My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centi
 \label{fig:cam}
 \end{mdframed}
 \end{figure}
-
 
 Figure \ref{fig:image1} shows two images of me in captured from the webcams. To see the results for these images, refer to Figure \ref{fig:image2}.
 This is a picture of me, from about 10 feet away.\\
@@ -220,18 +219,20 @@ The noise reducing effects of a median filter are evident.}
 
 The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[5pt]
 %
-There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer.\\[5pt]
+There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. \\[5pt]
 %
-Figure \ref{fig:result1} compares results for the laser and stereo vision approaches, from the Middlebury Computer Vision dataset. The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. 
+Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer.\\[5pt]
+%
+Figure \ref{fig:result1} compares results for the laser and stereo vision approaches, from the Middlebury Computer Vision dataset. The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. \\
 
-\begin{figure}
+\begin{figure}[!h]
 \begin{mdframed}
 \centering
 \setlength\tabcolsep{0.005\textwidth}
 \begin{tabular}{ccc}
-\includegraphics[width=0.33\textwidth]{images/_im0-600.jpg} &
-\includegraphics[width=0.33\textwidth]{images/disp0GT-600.jpg} &
-\includegraphics[width=0.33\textwidth]{images/_disp-600.jpg} \\[2pt]
+\includegraphics[width=0.3\textwidth]{images/_im0-600.jpg} &
+\includegraphics[width=0.3\textwidth]{images/disp0GT-600.jpg} &
+\includegraphics[width=0.3\textwidth]{images/_disp-600.jpg} \\[2pt]
 \end{tabular}
 \caption[Comparison of laser and stereo derived disparity maps]{Comparison of laser and stereo derived disparity maps: left) Original image center) Laser result right) Disparity Matching result.}
 \label{fig:result1}
@@ -239,7 +240,7 @@ Figure \ref{fig:result1} compares results for the laser and stereo vision approa
 \end{figure}
 
 \newpage
-Here are some results from my experiment, taken with web cams from my setup. Refer to Figure \ref{fig:cam} to see the details of my Stereo Vision setup.\\
+Figure \label{fig:image2} shows  results from my experiment, taken with web cams I mounted and calibrated. See Figure \ref{fig:cam} for details about my stereo vision setup.\\
 
 \begin{figure}[!h]
 \begin{mdframed}
@@ -258,36 +259,44 @@ a) & b) \\
 \section{Discussion}
 
 \subsection{Optimization of performance}
-camera crap here
+
+It took me several months to get my implementation working, and once I did, it was not performing nearly fast enough to work in real time. To optimize performance, I wrote code for a special python video grabbing method that utilized multi-threading to capture new frames simultaneously as previous frames were being processed. This increased the \texttt{frames per second} of my webcams from 30 FPS to 60 FPS, making the project two times faster.\\[5pt]
+%
+In addition, each row of the image is processed by a different thread, effectively making the code run approximately 10 times faster.
 
 \subsection{Applications}
 
-Stereo Vision has many applications in both Computer Vision and image processing. Some real world applications already being developed. Intelligent Vehicles Symposium published a paper on an algorithm that does analysis of traffic and car tracking. Google and other autonomous car manufactures use Stereo Vision to pilot their self driving cars, and avoid and sense obstacles.
+stereo vision has many applications in computer science and image processing. Some real world applications already being developed. The Intelligent Vehicles Symposium published a paper on an algorithm that does analysis of traffic and car tracking. Google and other autonomous car manufacturers use stereo vision to pilot their self driving cars, and avoid and sense obstacles.
 
 \subsection{Future work}
 
-In the future, I would like to further optimize the code, and to make higher quality depth maps using post processing sub pixel methods. I would also like to combine my work on Stereo Vision with image tracking and face recognition to make a 3D tracking system that can detect faces and track their distance and direction of movement.
+In the future, I would like to further optimize the performance of the code, and  make higher quality depth maps using post processing methods (algorithms that work on the \texttt{disparity maps}). I would also like to combine my work on stereo vision with image tracking and face recognition to make a 3D tracking system that can detect faces and track their distance and direction of movement.
+
 
 % ................................................
 \section{Conclusion}
 % ................................................
+
+Disparity maps can be used for many things: traffic control, autonomous cars, and even 3D models. But the main interest of stereo vision is just how cool it is. Using stereo vision, computers can tell how far away objects are, and detect obstacles. Stereo vision can make vehicles, drones, and toys smart and sense objects better. I thought that stereo vision would be much easier than it was, but I am glad that it was hard, because I learned a lot and had a lot of fun.
 
 
 % ................................................
 \section{Acknowledgements}
 % ................................................
 
-I would like to acknowledge several people for monitoring my project, explaining several formulas and giving feedback.
-Dr. Dedra Demaree gave me feedback on results and kept a journal of what got done, as my science teacher. Dr. John Washbourne, my dad, is a full blown researcher and he helped me learn LaTeX, and appreciates how cool Stereo Vision really is. My mom, Mrs. Larissa Washbourne helped me glue the slides on and helped me check the PDF for mistakes.
+I would like to acknowledge several people for monitoring my project, explaining several formulas and giving feedback.\\[5pt]
+%
+As my science teacher, Dr. Dedra Demaree gave me valuable feedback on my results.\\[5pt]
+%
+Dr. John Washbourne, my dad, is a professional research engineer, has helped me learn LaTeX, program the median filter, and appreciates the engineering aspects of this project.
+
 
 % ................................................
 \section{References}
 % ................................................
 
-this needs work
-
 \begin{enumerate}
-
+\item Joos, Franke U. "Real-time Stereo Vision for Urban Traffic Scene Understanding." IEEE Xplore. Intelligent Vehicles Symposium, 2 Apr. 2000. Web. 02 Apr. 2016.
 \item Middlebury Computer Vision dataset for the example images and laser vs stereo matching comparison.  
 \small
 http://vision.middlebury.edu
@@ -300,6 +309,12 @@ http://vision.middlebury.edu/stereo/datasets3/test/Classroom2/im1-600.jpg\\
 http://vision.middlebury.edu/stereo/results3/outputs/alg0034/test/Classroom2/disp-600.jpg
 \normalsize
 
+\item Images used in figure \ref{fig:result1}\\  
+\small
+http://vision.middlebury.edu/stereo/datasets3/test/Bicycle2/im0-600.jpg\\
+http://vision.middlebury.edu/stereo/datasets3/test/Bicycle2/disp0GT-600.jpg\\
+http://vision.middlebury.edu/stereo/results3/outputs/alg0034/test/Bicycle2/disp-600.jpg
+\normalsize
 \end{enumerate}
 
 \end{document}
