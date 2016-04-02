@@ -14,14 +14,18 @@
 \begin{document}
 
 \begin{center}
-\Large{\textbf{Stereo Vision Report}}\\[5pt]
-\large{Robert Washbourne}\\
+\huge{\textbf{Stereo Vision Report}}\\[20pt]
+\Large{Robert Washbourne}\\[20pt]
+7911 Meadow Lake Lane, Houston, TX, 77063\\[20pt]
+Washbourne Academy, Grade 9\\[20pt]
 Last edited: \today
 \end{center}
 
+\newpage
 \tableofcontents
 \listoffigures
 \newpage
+\normalsize
 
 % ................................................
 \section{Introduction}
@@ -31,7 +35,7 @@ Imagine driving in the dark, alert but not noticing a deer crossing the road rig
 
 \subsection{What is Stereo Vision}
 
-Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels indicaringcloser then darker pixels. This image is called a \texttt{disparity map}. With proper normalization, the \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example.\\[5pt]
+Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels indicaring smaller distance than darker pixels. This type of image is called a \texttt{disparity map}. With proper normalization, a \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example of a disparity map.\\[5pt]
 
 \begin{figure}[!h]
 \begin{mdframed}
@@ -43,23 +47,24 @@ Stereo vision is a topic in computer vision where two images, taken from aligned
 \includegraphics[width=0.33\textwidth]{images/disp-600.jpg} \\[2pt]
 a) & b) & c)
 \end{tabular}
-\caption[Example of disparity matching]{Example of disparity matching: a) Image from left camera. b) Image from right camera c) Disparity map.}
+\caption[Example of stereo vision]{Example of stereo vision: a) Image from left camera. b) Image from right camera c) Disparity map.}
 \label{fig:example1}
 \end{mdframed}
 \end{figure}
 
-\subsection{Outline}
-
-In the rest of this report I will describe the workflow I used to generate disparity maps in real time. 
 
 % ................................................
-\section{Workflow}
+\section{Project Details}
 % ................................................
 
-Following are descriptions of the steps required in order to perform stereo vision and generate \texttt{disparity maps}.
+Following are descriptions of the steps required in order to perform stereo vision and generate \texttt{disparity maps} in real time.
 
-\subsection{Calibrate stereo  webcams}
+\subsection{Calibrate stereo webcams}
+When taking pictures for stereo vision, you need to make sure that the cameras are aligned exactly vertically and horizontally. If they aren't, the disparity map is noisy. I invested considerable time in aligning my cameras to improve the results of the disparity mapping.\\[5pt]
+%
+Once the cameras are physically aligned, you can calibrate them. To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection , find the corners of the chessboard in both photos. (SIFT is method to find corners in an image). Once you have the corners as key points, you can find the transformation matrix that amps from the left image to the right image. Using this, the images can be perfectly centered, therefore making better disparity maps with less noise.
 
+\subsection{Capture images from stereo webcams}
 My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. Figure \ref{fig:cam} below is a photograph of my webcam setup.
 
 \begin{figure}[!ht]
@@ -71,16 +76,14 @@ My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centi
 \end{mdframed}
 \end{figure}
 
-\newpage
-To calibrate these cameras, you print a picture of a chessboard, and 
 
-\subsection{Capture images from stereo webcams}  
-
-Figure \ref{fig:image1} shows two images of me in my study captured from the webcams.
+Figure \ref{fig:image1} shows two images of me in captured from the webcams. To see the results for these images, refer to Figure \ref{fig:image2}.
+This is a picture of me, from about 10 feet away.
 
 \begin{figure}[!h]
 \begin{mdframed}
 \centering
+\setlength\tabcolsep{0.005\textwidth}
 \begin{tabular}{cc}
 \includegraphics[width=0.45\textwidth]{images/l.png} &
 \includegraphics[width=0.45\textwidth]{images/r.png} \\[2pt]
@@ -121,7 +124,6 @@ A median filter works by applying a particular type of edge preserving averaging
 %
 In order to show the meaning and usefulness of median filters, Figure \ref{fig:median_illustrate} below illustrates the application of a median filter to random image data, and Figure \ref{fig:medians} shows a median filter applied to real disparity map data.
 
-\newpage
 \begin{figure}[!ht]
 \begin{mdframed}
 \begin{equation*}
@@ -190,9 +192,10 @@ In order to show the meaning and usefulness of median filters, Figure \ref{fig:m
 \centering
 \begin{tabular}{cc}
 \includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median1.png} &
-\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}\\
+\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}\\[2pt]
+a) & b) \\
 \end{tabular}
-\caption[Example of 11x11 median filter applied to disparity map]{Example of 11x11 median filter applied to disparity map: left) before median filter right) after median filter. 
+\caption[Example of 11x11 median filter applied to disparity map]{Example of 11x11 median filter applied to disparity map where the colors correlate with distance, with cool colors (blue) arefar away and hot colors (red) close. a) Before median filter b) After median filter. 
 The noise reducing effects of a median filter are evident.}
 \label{fig:medians}
 \end{mdframed}
@@ -226,22 +229,27 @@ The laser result is crisper, but it takes much longer to generate. The stereo ma
 \begin{figure}[!h]
 \begin{mdframed}
 \centering
+\setlength\tabcolsep{0.005\textwidth}
 \begin{tabular}{cc}
-\includegraphics[width=0.45\textwidth]{images/l.png} &
-\includegraphics[width=0.45\textwidth]{images/r.png} \\[2pt]
+\includegraphics[width=0.45\textwidth]{images/res.png} &
+\includegraphics[width=0.45\textwidth]{images/nomedres.png} \\[2pt]
+a) & b) \\
 \end{tabular}
-\caption[Example images captured from webcams]{Example images captured from left and right webcams.}
+\caption[Results from my setup]{Results from my setup for the left and right camera images shown in Figure \ref{fig:image1}. The colors correlate with distance, where cool colors (blue) are far away and hot colors (red) are close. a) Raw disparity map b) Median filtered disparity map.}
 \label{fig:image2}
 \end{mdframed}
 \end{figure}
 
+\section{Discussion}
 
+\subsection{Optimization of performance}
+camera crap here
+
+\subsection{Applications}
+
+\subsection{Future work}
 
 \section{Conclusion}
-
-\section{Applications}
-
-\section{Future work}
 
 \newpage
 \begin{appendices}
