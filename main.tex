@@ -29,26 +29,26 @@ Imagine driving in the dark, alert but not noticing a deer cross the road. Using
 
 \subsection{What is Stereo Vision}
 
-Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels closer then darker pixels. This image is called a \textbf{depth map}.\\[6pt]
-%
-See figure \ref{fig:example1} for an example.
+Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels closer then darker pixels. This image is called a \texttt{disparity map}. With proper normalization, the \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example.\\[5pt]
 
-\begin{figure}[!ht]
+\begin{figure}[!h]
 \centering
 \setlength\tabcolsep{0.005\textwidth}
 \begin{tabular}{ccc}
-\includegraphics[width=0.31\textwidth]{images/im0-600.jpg} &
-\includegraphics[width=0.31\textwidth]{images/im1-600.jpg} &
-\includegraphics[width=0.31\textwidth]{images/disp-600.jpg} \\[2pt]
+\includegraphics[width=0.32\textwidth]{images/im0-600.jpg} &
+\includegraphics[width=0.32\textwidth]{images/im1-600.jpg} &
+\includegraphics[width=0.32\textwidth]{images/disp-600.jpg} \\[2pt]
 a) & b) & c) \\
 \end{tabular}
 \caption[Example of disparity matching]{Example of disparity matching: a) Image from left camera. b) Image from right camera c) Disparity map.}
 \label{fig:example1}
 \end{figure}
 
+\subsection{Outline}
+
+In the r
 
 % ...................................................................................
-\newpage
 \section{Workflow}
 % ...................................................................................
 
@@ -189,8 +189,8 @@ The noise reducing effects of a median filter are evident.}
 
 The disparity map matrix would range in values that did not show distance. To turn these values into distances, the program triangulates using the distance between cameras.\\[5pt]
 %
-There are several methods of creating depth maps.
-They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. Depth maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields good acceptable results. In this image, a colormap is used to make it easier to see what is closer. The blues are at the back and the reds at at the front.
+There are several methods of creating disparity maps.
+They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields good acceptable results. In this image, a colormap is used to make it easier to see what is closer. The blues are at the back and the reds at at the front.
 
 \begin{figure}[!ht]
 \centering
