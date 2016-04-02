@@ -23,6 +23,7 @@ Last edited: \today
 
 \newpage
 \tableofcontents
+\vspace{10pt}
 \listoffigures
 \newpage
 \normalsize
@@ -47,7 +48,7 @@ Stereo vision is a topic in computer vision where two images, taken from aligned
 \includegraphics[width=0.33\textwidth]{images/disp-600.jpg} \\[2pt]
 a) & b) & c)
 \end{tabular}
-\caption[Example of stereo vision]{Example of stereo vision: a) Image from left camera. b) Image from right camera c) Disparity map.}
+\caption[Example of stereo vision]{Example of stereo vision: a) Image from left camera. b) Image from right camera c) Disparity map mapwhere the colors correlate with distance, with cool colors (blue) far away and hot colors (red) close.}
 \label{fig:example1}
 \end{mdframed}
 \end{figure}
@@ -57,17 +58,19 @@ a) & b) & c)
 \section{Project Details}
 % ................................................
 
-Following are descriptions of the steps required in order to perform stereo vision and generate \texttt{disparity maps} in real time.
+Following are descriptions of the workflow steps required in order to perform stereo vision and generate \texttt{disparity maps} in real time.
 
 \subsection{Calibrate stereo webcams}
 When taking pictures for stereo vision, you need to make sure that the cameras are aligned exactly vertically and horizontally. If they aren't, the disparity map is noisy. I invested considerable time in aligning my cameras to improve the results of the disparity mapping.\\[5pt]
 %
-Once the cameras are physically aligned, you can calibrate them. To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection , find the corners of the chessboard in both photos. (SIFT is method to find corners in an image). Once you have the corners as key points, you can find the transformation matrix that amps from the left image to the right image. Using this, the images can be perfectly centered, therefore making better disparity maps with less noise.
+Once the cameras are physically aligned, you can calibrate them. To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection, find the corners of the chessboard in both photos. SIFT is a method to detect edges in images. \\[5pt]
+%
+Once you have the corners as key points, you can find the transformation matrix that maps from the left image to the right image. Using this transformation matrix, the cameras can be perfectly centered, therefore making better disparity maps with less noise.
 
 \subsection{Capture images from stereo webcams}
-My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. Figure \ref{fig:cam} below is a photograph of my webcam setup.
+My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. Figure \ref{fig:cam} below is a photograph of my webcam setup.\\
 
-\begin{figure}[!ht]
+\begin{figure}[!h]
 \begin{mdframed}
 \centering
 \includegraphics[width=0.95\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
@@ -95,7 +98,9 @@ This is a picture of me, from about 10 feet away.
 
 \subsection{Split images into one pixel high rows and correlate}
 
-Figure \ref{fig:strips} below is a comparison of the intensity from a single row near the bottom of the images shown in Figure \ref{fig:example1}. You can observe that the data from the left image (red line) is shifted by approximately 60 pixels towards the right with respect to the data from the right image (blue line) everywhere along the row. In other words, if you shift the red line about 60 pixels towards the left, it will line up quite well with the blue line. If you compare the two figures, you can observe that the apparent shift in the intensity values (Figure \ref{fig:strips}) is consistent with the apparent shift in the two images (Figure \ref{fig:example1}). \\[5pt]
+Figure \ref{fig:strips} below is a comparison of the intensity from a single row near the bottom of the images shown in Figure \ref{fig:example1}. You can observe that the data from the left image (red line) is shifted by approximately 60 pixels towards the right with respect to the data from the right image (blue line).\\[5pt]
+%
+In other words, if you shift the red line about 60 pixels towards the left, it will line up quite well with the blue line. If you compare the two figures, you can observe that the apparent shift in the intensity values (Figure \ref{fig:strips}) is consistent with the apparent shift in the two images (Figure \ref{fig:example1}). \\[5pt]
 %
 For each output pixel in the correlation, a window is slid along the right image's row to find a match for that pixel with the left image. If we did this for the 100th pixel of the blue line in Figure 2, we would find that the corresponding red point is approximately 60 pixels to the right.\\
 
@@ -103,7 +108,7 @@ For each output pixel in the correlation, a window is slid along the right image
 \begin{mdframed}
 \centering
 \includegraphics[width=1\textwidth]{images/strips.png} \\[2pt]
-\caption[Intensity of the one pixel strips taken from the images in Figure \ref{fig:example1}]{Magnitude of one pixel strips from the images in Figure \ref{fig:example1}. Left image is shown with the blue line, and the right image is shown with the red line. The horizontal axis is the column index from the images shown in Figure \ref{fig:example1}, and the vertical axis is the intensity value at that location. For example, at column 300 the left image intensity (blue line) is approximately 200.}
+\caption[Intensity of the one pixel strips taken from the images in Figure \ref{fig:example1}]{Magnitude of one pixel strips from the images in Figure \ref{fig:example1}. The row from the left image is shown with the blue line, and the row from the right image is shown with the red line. The horizontal axis is the column index from the images shown in Figure \ref{fig:example1}, and the vertical axis is the intensity value at that location. For example, at column 300 the left image intensity (blue line) is approximately 200.}
 \label{fig:strips}
 \end{mdframed}
 \end{figure}
@@ -122,9 +127,10 @@ A median filter works by applying a particular type of edge preserving averaging
 \item take the median sample value as the output value
 \end{enumerate}
 %
-In order to show the meaning and usefulness of median filters, Figure \ref{fig:median_illustrate} below illustrates the application of a median filter to random image data, and Figure \ref{fig:medians} shows a median filter applied to real disparity map data.
+In order to show the meaning and usefulness of median filters, Figure \ref{fig:median_illustrate} below illustrates the application of a median filter to random image data, and Figure \ref{fig:medians} shows a median filter applied to real disparity map data.\\
 
 \begin{figure}[!ht]
+\small
 \begin{mdframed}
 \begin{equation*}
 \begin{aligned}
@@ -186,8 +192,7 @@ In order to show the meaning and usefulness of median filters, Figure \ref{fig:m
 \end{mdframed}
 \end{figure}
 
-\newpage
-\begin{figure}[!ht]
+\begin{figure}[!h]
 \begin{mdframed}
 \centering
 \begin{tabular}{cc}
@@ -195,20 +200,25 @@ In order to show the meaning and usefulness of median filters, Figure \ref{fig:m
 \includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}\\[2pt]
 a) & b) \\
 \end{tabular}
-\caption[Example of 11x11 median filter applied to disparity map]{Example of 11x11 median filter applied to disparity map where the colors correlate with distance, with cool colors (blue) arefar away and hot colors (red) close. a) Before median filter b) After median filter. 
+\caption[Example of 11x11 median filter applied to disparity map]{Example of 11x11 median filter applied to disparity map where the colors correlate with distance, with cool colors (blue) are far away and hot colors (red) close. a) Before median filter b) After median filter. 
 The noise reducing effects of a median filter are evident.}
 \label{fig:medians}
 \end{mdframed}
 \end{figure}
 
+\newpage
 \subsection{Return the final disparity map}
 
-The disparity map matrix would range in values that did not show distance. To turn these values into distances, the program triangulates using the distance between cameras.\\[5pt]
+The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[5pt]
 %
-There are several methods of creating disparity maps.
-They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields good acceptable results. In this image, a colormap is used to make it easier to see what is closer. The blues are at the back and the reds at at the front.
+There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. \\[5pt]
+%
+Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer. 
 
-\begin{figure}[!ht]
+\newpage
+The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. See Figure \ref{fig:result1} for a result comparison.
+
+\begin{figure}[!h]
 \begin{mdframed}
 \centering
 \setlength\tabcolsep{0.005\textwidth}
@@ -218,13 +228,10 @@ They can be created by a laser scanner, but this process is much slower than ste
 \includegraphics[width=0.33\textwidth]{images/_disp-600.jpg} \\[2pt]
 a) & b) & c) \\
 \end{tabular}
-\caption[Comparison of laser and stereo]{Comparison of laser and stereo: a) Original image b) Laser result c) Disparity Matching result.}
+\caption[Comparison of laser and stereo derived disparity maps]{Comparison of laser and stereo derived disparity maps: a) Original image b) Laser result c) Disparity Matching result.}
 \label{fig:result1}
 \end{mdframed}
 \end{figure}
-
-The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. See Figure \ref{fig:result1} for a result comparison.
-
 
 \begin{figure}[!h]
 \begin{mdframed}
@@ -247,12 +254,23 @@ camera crap here
 
 \subsection{Applications}
 
+Stereo Vision has many applications in both Computer Vision and image processing. Some real world applications already being developed. Intelligent Vehicles Symposium published a paper on an algorithm that does analysis of traffic and car tracking. Google and other autonomous car manufactures use Stereo Vision to pilot their self driving cars, and avoid and sense obstacles.
+
 \subsection{Future work}
 
-\section{Conclusion}
+In the future, I would like to further optimize the code, and to make higher quality depth maps using post processing sub pixel methods. I would also like to combine my work on Stereo Vision with image tracking and face recognition to make a 3D tracking system that can detect faces and track their distance and direction of movement.
 
-\newpage
-\begin{appendices}
+% ................................................
+\section{Conclusion}
+% ................................................
+
+
+% ................................................
+\section{Acknowledgements}
+% ................................................
+
+I would like to acknowledge several people for monitoring my project, explaining several formulas and giving feedback.
+Dr. Dedra Demaree gave me feedback on results and kept a journal of what got done, as my science teacher. Dr. John Washbourne, my dad, is a full blown researcher and he helped me learn LaTeX, and appreciates how cool Stereo Vision really is. My mom, Mrs. Larissa Washbourne helped me glue the slides on and helped me check the PDF for mistakes.
 
 % ................................................
 \section{References}
@@ -275,23 +293,6 @@ http://vision.middlebury.edu/stereo/results3/outputs/alg0034/test/Classroom2/dis
 \normalsize
 
 \end{enumerate}
-
-
-% ................................................
-\section{Definitions}
-% ................................................
-\begin{itemize}
-\item \texttt{Computer Vision}\\[2pt]
-The field of acquiring, processing, analyzing, and understanding data from the real world.
-
-\item \texttt{Stereo Matching}\\[2pt]
-The method to create disparity maps. Part the field of computer vision.
-
-\item \texttt{Disparity Maps}\\[2pt]
-Grayscale images that represent distance in an image. Can be converted to a 3D point cloud without too much trouble.
-\end{itemize}
-
-\end{appendices}
 
 \end{document}
 
