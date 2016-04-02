@@ -1,0 +1,258 @@
+\documentclass[11pt,fleqn]{article}
+\usepackage{graphicx}
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage[toc,page]{appendix}
+\usepackage{amsmath}
+\usepackage{caption}
+
+\hypersetup{colorlinks=true, linktoc=all, linkcolor=blue}
+
+\begin{document}
+
+\begin{center}
+\Large{\textbf{Stereo Vision Report}}\\[5pt]
+\large{Robert Washbourne}\\
+Last edited: \today
+\end{center}
+
+\tableofcontents
+\listoffigures
+\newpage
+
+% ...................................................................................
+\section{Introduction}
+% ...................................................................................
+
+Imagine driving in the dark, alert but not noticing a deer cross the road. Using stereo vision methods to see what is close, your car could detect the deer and brake before you even saw the obstacle. The cameras would find distances, and sensing something closer than 20 feet, send the location of the deer to the computer. The computer would see that driving over this would be catastrophic for the car, and turn on the brakes. The deer, and you, would be safe.
+
+\subsection{What is Stereo Vision}
+
+Stereo matching is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels closer then darker pixels. This image is called a \textbf{depth map}.\\[6pt]
+%
+See figure \ref{fig:example1} for an example.
+
+\begin{figure}[!ht]
+\centering
+\setlength\tabcolsep{0.005\textwidth}
+\begin{tabular}{ccc}
+\includegraphics[width=0.31\textwidth]{images/im0-600.jpg} &
+\includegraphics[width=0.31\textwidth]{images/im1-600.jpg} &
+\includegraphics[width=0.31\textwidth]{images/disp-600.jpg} \\[2pt]
+a) & b) & c) \\
+\end{tabular}
+\caption[Example of disparity matching]{Example of disparity matching: a) Image from left camera. b) Image from right camera c) Disparity map.}
+\label{fig:example1}
+\end{figure}
+
+
+% ...................................................................................
+\newpage
+\section{Workflow}
+% ...................................................................................
+
+\subsection{Calibrate stereo  webcams}
+
+My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. Figure \ref{fig:cam} below is a photograph of my webcam setup. \\[5pt]
+%
+To calibrate these cameras, you print a picture of a chessboard, and 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.95\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
+\caption[Photo of the stereo webcams used for real time processing]{Photo of the stereo webcams used for real time processing}
+\label{fig:cam}
+\end{figure}
+
+\subsection{Capture images from stereo webcams}  
+
+Figure \ref{fig:chess} shows two images of me holding a chessboard captured from the webcams.
+
+\begin{figure}[!h]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{images/l16.png} &
+\includegraphics[width=0.45\textwidth]{images/r16.png} \\[2pt]
+\end{tabular}
+\caption[Example images captured from webcams]{Example images captured from left and right webcams.}
+\label{fig:chess}
+\end{figure}
+
+
+\subsection{Split images into one pixel high rows and correlate}
+
+Figure \ref{fig:strips} below is a comparison of the intensity from a single near the bottom of the images shown in Figure \ref{fig:example1}. You can observe that the data from the left image (red line) is shifted by approximately 60 pixels towards the right with respect to the data from the right image (blue line) everywhere along the row. In other words, if you shift the red line about 60 pixels towards the left, it will line up quite well with the blue line.\\[5pt]
+%
+For each output pixel in the correlation, a window is slid along the right image's row to find a match for that pixel with the left image. If we did this for the 100th pixel of the blue line in the rows in figure 2, we would find that the corresponding red point is approximately 60 pixels to the right.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth]{images/strips.png} \\[2pt]
+\caption[Magnitude of 1 pixel strips from the images in Figure \ref{fig:example1}]{Magnitude of one pixel strips from the images in Figure \ref{fig:example1}. Left image blue line, and right image red line. Left axis is the pixels value of the point of the bottom axis. For example, at 300, the blue line is around 200.
+}
+\label{fig:strips}
+\end{figure}
+
+\subsection{Estimate pixel distance}
+The pixel distance that we found is added to the relevant output row and column of the disparity matrix.
+
+\subsection{Apply edge preserving median filter}
+
+A median filter works by applying a particular type of edge preserving averaging to pixels. Median filtering is quite simple, requiring two steps per output location:
+
+\begin{enumerate}
+\item sort the samples in the input window by magnitude
+\item take the median sample value as the output value
+\end{enumerate}
+%
+In order to show the meaning and usefulness of median filters, Figure \ref{fig:median_illustrate} below illustrates the application of a median filter to random image data, and Figure \ref{fig:medians} shows a median filter applied to real disparity map data.
+
+
+\begin{figure}
+\fbox{
+\vspace{20pt}
+\small
+\begin{equation*}
+\begin{aligned}
+&\texttt{4x4 section of representative input image data}\\
+& \hspace{20pt} \begin{bmatrix}
+2 & 0 & 3 & 5 \\
+1 & 4 & 2 & 7 \\
+3 & 1 & 0 & 3 \\
+6 & 8 & 4 & 2 \\ 
+\end{bmatrix} \\[10pt]
+%
+& \texttt{Application of 3x3 median filter to the $(2,2)$ interior filter location}\\
+& \hspace{20pt} \begin{bmatrix}
+\mathbf{2} & \mathbf{0} & \mathbf{3} & 5 \\
+\mathbf{1} & \mathbf{4} & \mathbf{2} & 7 \\
+\mathbf{3} & \mathbf{1} & \mathbf{0} & 3 \\
+6 & 8 & 4 & 2 \\ 
+\end{bmatrix} 
+\rightarrow (2, 0, 3, 1, 4, 2, 3, 1, 0) \rightarrow (0, 0, 1, 1, 2, 2, 3, 3, 4) \rightarrow (2) \\[10pt]
+%
+& \texttt{Application of 3x3 median filter to the $(2,3)$ interior filter location}\\
+& \hspace{20pt} \begin{bmatrix}
+2 & \mathbf{0} & \mathbf{3} & \mathbf{5} \\
+1 & \mathbf{4} & \mathbf{2} & \mathbf{7} \\
+3 & \mathbf{1} & \mathbf{0} & \mathbf{3} \\
+6 & 8 & 4 & 2 \\ 
+\end{bmatrix} 
+\rightarrow (0, 3, 5, 4, 2, 7, 1, 0, 3) \rightarrow (0, 0, 1, 2, 3, 4, 4, 5, 7) \rightarrow (3) \\[10pt]
+%
+& \texttt{Application of 3x3 median filter to the $(3,2)$ interior filter location}\\
+& \hspace{20pt} \begin{bmatrix}
+2 & 0 & 3 & 5 \\
+\mathbf{1} & \mathbf{4} & \mathbf{2} & 7 \\
+\mathbf{3} & \mathbf{1} & \mathbf{0} & 3 \\
+\mathbf{6} & \mathbf{8} & \mathbf{4} & 2 \\ 
+\end{bmatrix} 
+\rightarrow (1, 4, 2, 3, 1, 0, 6, 8, 4) \rightarrow (0, 1, 1, 2, 3, 4, 4, 6, 8) \rightarrow (3) \\[10pt]
+%
+& \texttt{Application of 3x3 median filter to the $(3,3)$ interior filter location}\\
+& \hspace{20pt} \begin{bmatrix}
+2 & 0 & 3 & 5 \\
+1 & \mathbf{4} & \mathbf{2} & \mathbf{7} \\
+3 & \mathbf{1} & \mathbf{0} & \mathbf{3} \\
+6 & \mathbf{8} & \mathbf{4} & \mathbf{2} \\ 
+\end{bmatrix} 
+\rightarrow (4, 2, 7, 1, 0, 3, 8, 4, 2) \rightarrow (0, 1, 2, 2, 3, 4, 4, 7, 8) \rightarrow (3) \\[10pt]
+%
+& \texttt{Output 3x3 median filtered data, with edge locations zeroed}\\
+& \hspace{20pt} \begin{bmatrix}
+0 & 0 & 0 & 0 \\
+0 & 2 & 3 & 0 \\
+0 & 3 & 3 & 0 \\
+0 & 0 & 0 & 0 \\ 
+\end{bmatrix}
+\end{aligned}
+\end{equation*}
+\vspace{20pt}
+}
+\caption[Illustration of median filter application]{Illustration of median filter application.}
+\label{fig:median_illustrate}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median1.png} &
+\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}\\
+\end{tabular}
+\caption[Example of median filter applied to disparity map]{Example of median filter applied to disparity map: left) before median filter right) after median filter. 
+The noise reducing effects of a median filter are evident.}
+\label{fig:medians}
+\end{figure}
+
+\subsection{Return the final disparity map}
+
+The disparity map matrix would range in values that did not show distance. To turn these values into distances, the program triangulates using the distance between cameras.\\[5pt]
+%
+There are several methods of creating depth maps.
+They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. Depth maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields good acceptable results. In this image, a colormap is used to make it easier to see what is closer. The blues are at the back and the reds at at the front.
+
+\begin{figure}[!ht]
+\centering
+\setlength\tabcolsep{0.005\textwidth}
+\begin{tabular}{ccc}
+\includegraphics[width=0.33\textwidth]{images/_im0-600.jpg} &
+\includegraphics[width=0.33\textwidth]{images/disp0GT-600.jpg} &
+\includegraphics[width=0.33\textwidth]{images/_disp-600.jpg} \\[2pt]
+a) & b) & c) \\
+\end{tabular}
+\caption[Comparison of laser and stereo]{Comparison of laser and stereo: a) Original image b) Laser result c) Disparity Matching result.}
+\label{fig:result1}
+\end{figure}
+
+The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. See Figure \ref{fig:result1} for a result comparison.
+
+
+\section{Applications}
+
+\section{Future work}
+
+\newpage
+\begin{appendices}
+
+% ...................................................................................
+\section{References}
+% ...................................................................................
+
+this needs work
+
+\begin{enumerate}
+
+\item Middlebury Computer Vision dataset for the example images and laser vs stereo matching comparison.  
+\small
+http://vision.middlebury.edu
+\normalsize
+
+\item Images used in figure \ref{fig:example1}\\  
+\small
+http://vision.middlebury.edu/stereo/datasets3/test/Classroom2/im0-600.jpg\\
+http://vision.middlebury.edu/stereo/datasets3/test/Classroom2/im1-600.jpg\\
+http://vision.middlebury.edu/stereo/results3/outputs/alg0034/test/Classroom2/disp-600.jpg
+\normalsize
+
+\end{enumerate}
+
+
+% ...................................................................................
+\section{Definitions}
+% ...................................................................................
+\begin{itemize}
+\item \texttt{Computer Vision}\\[2pt]
+The field of acquiring, processing, analyzing, and understanding data from the real world.
+
+\item \texttt{Stereo Matching}\\[2pt]
+The method to create disparity maps. Part the field of computer vision.
+
+\item \texttt{Disparity Maps}\\[2pt]
+Grayscale images that represent distance in an image. Can be converted to a 3D point cloud without too much trouble.
+\end{itemize}
+
+\end{appendices}
+
+\end{document}
+
