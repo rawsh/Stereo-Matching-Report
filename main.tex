@@ -2,9 +2,7 @@
 \usepackage{graphicx}
 \usepackage[letterpaper, margin=1in]{geometry}
 \usepackage{hyperref}
-\usepackage{multicol}
 \usepackage{mdframed}
-\usepackage[toc,page]{appendix}
 \usepackage{amsmath}
 \usepackage{caption}
 
@@ -28,7 +26,18 @@ Last edited: \today
 \newpage
 \normalsize
 
+\section{Abstract}
+
+In August 2015, I began working on a project to find distances of objects using two webcams.  My initial interest in this project stemmed from seeing a video on self-driving cars. I thought that self-driving cars would need to somehow calculate distances to see how far away objects such as other cars are from them.\\[5pt]
+%
+Next I thought about the function of human vision and how our eyes perceive distance. We determine if objects are closer or farther away by comparing images from the left eye and the right eye. Based on human vision, my first project iteration used two cameras and compared each pixel from the camera images in order to generate a depth (distance) map.\\[5pt]
+%
+This pixel distance is added to a disparity matrix (a matrix full of pixel distances). Then, the disparity matrix distances are triangulated using the distance between the cameras. This matrix of distances can be converted to a 3D model.\\[5pt]
+This method is fast enough to work in real time, and is what I am presenting in April 2016. The demonstration I have prepared utilizes two webcams mounted two centimeters apart on a piece of wood, and can resolve the depth of objects that are farther than three feet away. Future iterations of my project will include a faster algorithm, and the addition of creating 3-D models for scanning objects.
+
+
 % ................................................
+\newpage
 \section{Introduction}
 % ................................................
 
@@ -36,16 +45,16 @@ Imagine driving in the dark, alert but not noticing a deer crossing the road rig
 
 \subsection{What is Stereo Vision}
 
-Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels indicaring smaller distance than darker pixels. This type of image is called a \texttt{disparity map}. With proper normalization, a \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example of a disparity map.\\[5pt]
+Stereo vision is a topic in computer vision where two images, taken from aligned cameras several centimetres apart, are processed and depth data is returned. For example, taking two images and using a simple algorithm, a grayscale image is returned, with lighter pixels indicaring smaller distance than darker pixels. This type of image is called a \texttt{disparity map}. With proper normalization, a \texttt{disparity map} can be turned into a \texttt{depth map}. See Figure \ref{fig:example1} for an example of a disparity map.
 
 \begin{figure}[!h]
 \begin{mdframed}
 \centering
 \setlength\tabcolsep{0.005\textwidth}
 \begin{tabular}{ccc}
-\includegraphics[width=0.33\textwidth]{images/im0-600.jpg} &
-\includegraphics[width=0.33\textwidth]{images/im1-600.jpg} &
-\includegraphics[width=0.33\textwidth]{images/disp-600.jpg} \\[2pt]
+\includegraphics[width=0.32\textwidth]{images/im0-600.jpg} &
+\includegraphics[width=0.32\textwidth]{images/im1-600.jpg} &
+\includegraphics[width=0.32\textwidth]{images/disp-600.jpg} \\[2pt]
 a) & b) & c)
 \end{tabular}
 \caption[Example of stereo vision]{Example of stereo vision: a) Image from left camera. b) Image from right camera c) Disparity map mapwhere the colors correlate with distance, with cool colors (blue) far away and hot colors (red) close.}
@@ -65,6 +74,7 @@ When taking pictures for stereo vision, you need to make sure that the cameras a
 %
 Once the cameras are physically aligned, you can calibrate them. To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection, find the corners of the chessboard in both photos. SIFT is a method to detect edges in images. \\[5pt]
 %
+\newpage
 Once you have the corners as key points, you can find the transformation matrix that maps from the left image to the right image. Using this transformation matrix, the cameras can be perfectly centered, therefore making better disparity maps with less noise.
 
 \subsection{Capture images from stereo webcams}
@@ -206,14 +216,14 @@ The noise reducing effects of a median filter are evident.}
 \label{fig:medians}
 \end{mdframed}
 \end{figure}
-
 \subsection{Return the final disparity map}
 
 The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[5pt]
 %
-There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing.\\
-Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer.
-The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. See Figure \ref{fig:result1} for a result comparison.
+There are several methods of creating disparity maps. They can be created by a laser scanner, but this process is much slower than stereo matching and unsuited for real time processing. Disparity maps can also be created with two cameras. This is the method that I explored, and it is fast enough for real time processing and yields acceptable results. In images created with this technique, a colormap is used to make it easier to see what is closer.\\[5pt]
+%
+Figure \ref{fig:result1} compares results for the laser and stereo vision approaches, from the Middlebury Computer Vision dataset. The laser result is crisper, but it takes much longer to generate. The stereo matching result is worse, with parts of the image blended, but it was generated much faster. 
+
 \begin{figure}
 \begin{mdframed}
 \centering
@@ -227,8 +237,9 @@ The laser result is crisper, but it takes much longer to generate. The stereo ma
 \label{fig:result1}
 \end{mdframed}
 \end{figure}
+
 \newpage
-Here are some results from my experiment, taken with web cams from my setup. Refer to Figure \ref{fig:cam} to see the details of my Stereo Vision setup.
+Here are some results from my experiment, taken with web cams from my setup. Refer to Figure \ref{fig:cam} to see the details of my Stereo Vision setup.\\
 
 \begin{figure}[!h]
 \begin{mdframed}
