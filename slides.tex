@@ -2,9 +2,7 @@
 \usepackage{graphicx}
 \usepackage{mdframed}
 
-% \title{Stereo Vision}
-% \author{Robert Washbourne}
-% \date{\today}
+\setbeamertemplate{footline}[frame number]
 
 \begin{document}
 
@@ -51,7 +49,6 @@ Left image & Right Image & Stereo matching \\
     \item Calibrate stereo webcams\\[10pt]
     \item Capture images from stereo webcams\\[10pt]
     \item Find distances between images\\[10pt]
-    \item Estimate pixel distance\\[10pt]
     \item Apply edge preserving median filter\\[10pt]
     \item Return the final disparity map 
 \end{enumerate}
@@ -92,7 +89,8 @@ This configuration can capture images of anything farther than three feet away, 
 \begin{frame}
 \frametitle{Workflow 2: Capture images from stereo webcams (2)}
 
-The figure below shows two images of me in captured from the webcams. 
+The figure below shows two images of me in captured from the left and right webcams.\\[10pt]
+%
 This is a picture of me, from about 10 feet away.\\[20pt]
 
 \begin{center}
@@ -139,7 +137,7 @@ We illustrate the application of a 3x3 median filter to random image data on the
 
 % ................................................
 \begin{frame}
-\frametitle{Workflow 5: Apply edge preserving median filter (2)}
+\frametitle{Workflow 4: Apply edge preserving median filter (2)}
 
 \fontsize{8.5}{8.5}\selectfont
 
@@ -188,17 +186,18 @@ We illustrate the application of a 3x3 median filter to random image data on the
 
 % ................................................
 \begin{frame}
-\frametitle{Workflow 5: Apply edge preserving median filter (3)}
+\frametitle{Workflow 4: Apply edge preserving median filter (3)}
 
 \vspace*{15pt}
-Example of 11x11 median filter applied to disparity map where the colors correlate with distance, with cool colors (blue) are far away and hot colors (red) close. a) Before median filter b) After median filter. 
-The noise reducing effects of a median filter are evident.
+Before/after example of application of a 11x11 median filter applied to a disparity map. The colors correlate with distance: cool colors (blue) are far away, and hot colors (red) are close. \\[10pt]
+%
+The noise reducing effects of the median filter are evident.
 
+\vspace*{-5pt}
 \begin{center}
 \begin{tabular}{cc}
 \includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median1.png} &
-\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}\\[2pt]
-a) & b) \\
+\includegraphics[width=0.49\textwidth, trim=60 10 25 10, clip]{images/median2.png}
 \end{tabular}
 \end{center}
 
@@ -208,17 +207,36 @@ a) & b) \\
 
 % ................................................
 \begin{frame}
-\frametitle{Workflow 6: Return the final disparity map}
-The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[10pt]
+\frametitle{Workflow 5: Return the final disparity map}
 
-\hspace*{-18pt}
-\begin{tabular}{ccc}
-\includegraphics[width=0.33\textwidth]{images/l.png} &
-\includegraphics[width=0.33\textwidth]{images/r.png} &
-\includegraphics[width=0.33\textwidth]{images/nomedres.png}
+\vspace*{10pt}
+The output disparity map has values that do not show distance. To turn these values into distance, the program triangulates using the distance between cameras.\\[10pt]
+%
+Here are the raw disparity map (left) and the 11x11 median filtered disparity map (right).
+
+\begin{center}
+\setlength\tabcolsep{0.01\textwidth}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{images/res.png} &
+\includegraphics[width=0.45\textwidth]{images/nomedres.png} \\
 \end{tabular}
+\end{center}
 
 \end{frame}
 % ................................................
+
+
+% ................................................
+\begin{frame}
+\frametitle{Conclusion}
+
+Disparity maps can be used for many things: traffic control, autonomous cars, and even 3D models. However, the main interest of stereo vision is just how cool it is. \\[10pt]
+%
+Using stereo vision, computers can tell how far away objects are, and detect obstacles. Stereo vision can make vehicles, drones, and toys smart and sense objects better.\\[10pt]
+%
+I thought that stereo vision would be much easier than it was, but I am glad that it was hard, because I learned a lot and had a lot of fun.
+\end{frame}
+% ................................................
+
 
 \end{document}

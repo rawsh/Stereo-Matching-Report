@@ -105,13 +105,15 @@ This is a picture of me, from about 10 feet away.\\
 \end{mdframed}
 \end{figure}
 
-\subsection{Split images into one pixel high rows and correlate}
+\subsection{Split images into one pixel high rows, correlate, and estimate distance}
 
 Figure \ref{fig:strips} below is a comparison of the intensity from a single row near the bottom of the images shown in Figure \ref{fig:example1}. You can observe that the data from the left image (red line) is shifted by approximately 60 pixels towards the right with respect to the data from the right image (blue line).\\[5pt]
 %
 In other words, if you shift the red line about 60 pixels towards the left, it will line up quite well with the blue line. If you compare the two figures, you can observe that the apparent shift in the intensity values (Figure \ref{fig:strips}) is consistent with the apparent shift in the two images (Figure \ref{fig:example1}). \\[5pt]
 %
-For each output pixel in the correlation, a window is slid along the right image's row to find a match for that pixel with the left image. If we did this for the 100th pixel of the blue line in Figure 2, we would find that the corresponding red point is approximately 60 pixels to the right.\\
+For each output pixel in the correlation, a window is slid along the right image's row to find a match for that pixel with the left image. If we did this for the 100th pixel of the blue line in Figure 2, we would find that the corresponding red point is approximately 60 pixels to the right.\\[5pt]
+%
+The pixel distance that we find via correlation is added to the relevant output row and column of the \texttt{disparity map}.\\
 
 \begin{figure}[!h]
 \begin{mdframed}
@@ -121,9 +123,6 @@ For each output pixel in the correlation, a window is slid along the right image
 \label{fig:strips}
 \end{mdframed}
 \end{figure}
-
-\subsection{Estimate pixel distance}
-The pixel distance that we find via correlation is added to the relevant output row and column of the \texttt{disparity map}.
 
 \subsection{Apply edge preserving median filter}
 
@@ -279,7 +278,7 @@ In the future, I would like to further optimize the performance of the code, and
 \section{Conclusion}
 % ................................................
 
-Disparity maps can be used for many things: traffic control, autonomous cars, and even 3D models. But the main interest of stereo vision is just how cool it is. Using stereo vision, computers can tell how far away objects are, and detect obstacles. Stereo vision can make vehicles, drones, and toys smart and sense objects better. I thought that stereo vision would be much easier than it was, but I am glad that it was hard, because I learned a lot and had a lot of fun.
+Disparity maps can be used for many things: traffic control, autonomous cars, and even 3D models. However, the main interest of stereo vision is just how cool it is. Using stereo vision, computers can tell how far away objects are, and detect obstacles. Stereo vision can make vehicles, drones, and toys smart and sense objects better. I thought that stereo vision would be much easier than it was, but I am glad that it was hard, because I learned a lot and had a lot of fun.
 
 
 % ................................................
