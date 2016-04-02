@@ -9,6 +9,7 @@
 
 % \maketitle
 
+% ................................................
 \begin{frame}
 \frametitle{Introduction}
 
@@ -18,8 +19,10 @@ Stereo cameras could find distances, and sensing something closer than 20 feet, 
 %
 The deer, and you, would be safe.
 \end{frame}
+% ................................................
 
 
+% ................................................
 \begin{frame}
 \frametitle{What is stereo matching?}
 
@@ -37,8 +40,10 @@ Left image & Right Image & Stereo matching \\
 \end{tabular}
 
 \end{frame}
+% ................................................
 
 
+% ................................................
 \begin{frame}
 \frametitle{Program Details}
 \begin{enumerate}
@@ -50,7 +55,10 @@ Left image & Right Image & Stereo matching \\
     \item Return the final disparity map 
 \end{enumerate}
 \end{frame}
+% ................................................
 
+
+% ................................................
 \begin{frame}
 \frametitle{Workflow 1: Calibrate stereo webcams}
 
@@ -60,26 +68,80 @@ To calibrate two cameras, you print a picture of a chessboard, and using an algo
 %
 Once you have the corners as key points, you can find the transformation matrix that maps from the left image to the right image. This will allow perfectly centering the cameras, resulting in  disparity maps with less noise.
 \end{frame}
+% ................................................
 
+
+% ................................................
 \begin{frame}
-\frametitle{Workflow 2: Capture images from stereo webcams}
-\end{frame}
+\frametitle{Workflow 2: Capture images from stereo webcams (1)}
 
+My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. \\[15pt]
+%
+This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. This is a photograph of my webcam setup.
+
+\begin{mdframed}
+\centering
+\includegraphics[width=0.85\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
+\end{mdframed}
+
+\end{frame}
+% ................................................
+
+
+% ................................................
+\begin{frame}
+\frametitle{Workflow 2: Capture images from stereo webcams (2)}
+
+The figure below shows two images of me in captured from the webcams. 
+This is a picture of me, from about 10 feet away.
+
+% \begin{mdframed}
+% \centering
+% \setlength\tabcolsep{0.005\textwidth}
+% \begin{tabular}{cc}
+% \includegraphics[width=0.45\textwidth]{images/l.png} &
+% \includegraphics[width=0.45\textwidth]{images/r.png} \\[2pt]
+% \end{tabular}
+% \label{fig:image1}
+% \end{mdframed}
+
+\end{frame}
+% ................................................
+
+
+% ................................................
 \begin{frame}
 \frametitle{Workflow 3: Split images into 1 pixel high rows and correlate}
-\end{frame}
 
-\begin{frame}
-\frametitle{Workflow 1: Estimate pixel distance}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=1\textwidth]{images/strips.png} \\[2pt]
+\caption[Intensity of the one pixel strips taken from the images in Figure \ref{fig:image1}]{Magnitude of one pixel strips from the images in Figure \ref{fig:image1}. The row from the left image is shown with the blue line, and the row from the right image is shown with the red line. The horizontal axis is the column index from the images shown in Figure \ref{fig:image1}, and the vertical axis is the intensity value at that location. For example, at column 300 the left image intensity (blue line) is approximately 200.}
+\label{fig:strips}
+\end{figure}
 \end{frame}
+% ................................................
 
-\begin{frame}
-\frametitle{Workflow 1: Apply edge preserving median filter}
-\end{frame}
 
+% ................................................
 \begin{frame}
-\frametitle{Workflow 1: Return the final disparity map}
+\frametitle{Workflow 4: Estimate pixel distance}
 \end{frame}
+% ................................................
+
+
+% ................................................
+\begin{frame}
+\frametitle{Workflow 5: Apply edge preserving median filter}
+\end{frame}
+% ................................................
+
+
+% ................................................
+\begin{frame}
+\frametitle{Workflow 6: Return the final disparity map}
+\end{frame}
+% ................................................
 
 
 \end{document}
