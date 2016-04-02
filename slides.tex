@@ -1,5 +1,6 @@
 \documentclass[19pt]{beamer}
 \usepackage{graphicx}
+\usepackage{mdframed}
 
 % \title{Stereo Vision}
 % \author{Robert Washbourne}
@@ -13,9 +14,9 @@
 \begin{frame}
 \frametitle{Introduction}
 
-Imagine driving in the dark, alert but not noticing a deer crossing the road right in front of you. Using stereo vision methods to see what is close, your car could detect the deer and brake before you even notice the obstacle. \\[15pt]
+Imagine driving in the dark, alert but not noticing a deer crossing the road right in front of you. Using stereo vision methods to see what is close, your car could detect the deer and brake before you even notice the obstacle. \\[10pt]
 %
-Stereo cameras could find distances, and sensing something closer than 20 feet, send the location to a computer controlling the car. The computer could reason that driving into the obstacle would be catastrophic and turn on the brakes. \\[15pt]
+Stereo cameras could find distances, and sensing something closer than 20 feet, send the location to a computer controlling the car. The computer could reason that driving into the obstacle would be catastrophic and turn on the brakes. \\[10pt]
 %
 The deer, and you, would be safe.
 \end{frame}
@@ -26,7 +27,7 @@ The deer, and you, would be safe.
 \begin{frame}
 \frametitle{What is stereo matching?}
 
-Stereo matching is a computer technique where two images taken from aligned cameras several centimetres apart are processed for depth information. \\[15pt]
+Stereo matching is a computer technique where two images taken from aligned cameras several centimetres apart are processed for depth information. \\[10pt]
 %
 For example, taking two images and using a simple algorithm, a colored image is returned, with blue color pixels closer than red color pixels. Here is an example, generated with my code.\\[20pt]
 
@@ -47,11 +48,11 @@ Left image & Right Image & Stereo matching \\
 \begin{frame}
 \frametitle{Program Details}
 \begin{enumerate}
-    \item Calibrate stereo webcams\\[15pt]
-    \item Capture images from stereo webcams\\[15pt]
-    \item Split images into one pixel high rows and correlate\\[15pt]
-    \item Estimate pixel distance\\[15pt]
-    \item Apply edge preserving median filter\\[15pt]
+    \item Calibrate stereo webcams\\[10pt]
+    \item Capture images from stereo webcams\\[10pt]
+    \item Split images into one pixel high rows and correlate\\[10pt]
+    \item Estimate pixel distance\\[10pt]
+    \item Apply edge preserving median filter\\[10pt]
     \item Return the final disparity map 
 \end{enumerate}
 \end{frame}
@@ -62,9 +63,9 @@ Left image & Right Image & Stereo matching \\
 \begin{frame}
 \frametitle{Workflow 1: Calibrate stereo webcams}
 
-When taking pictures for stereo vision, you need to make sure that the cameras are aligned exactly vertically and horizontally. If they aren't, the disparity map is noisy.\\[15pt]
+When taking pictures for stereo vision, you need to make sure that the cameras are aligned exactly vertically and horizontally. If they aren't, the disparity map is noisy.\\[10pt]
 %
-To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection, find the corners of the chessboard in both photos.\\[15pt]
+To calibrate two cameras, you print a picture of a chessboard, and using an algorithm called SIFT key point detection, find the corners of the chessboard in both photos.\\[10pt]
 %
 Once you have the corners as key points, you can find the transformation matrix that maps from the left image to the right image. This will allow perfectly centering the cameras, resulting in  disparity maps with less noise.
 \end{frame}
@@ -75,14 +76,13 @@ Once you have the corners as key points, you can find the transformation matrix 
 \begin{frame}
 \frametitle{Workflow 2: Capture images from stereo webcams (1)}
 
-My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. \\[15pt]
+My setup is a wooden board with 2 Microsoft LifeCam 3000 webcams mounted 2 centimeters apart, facing the same direction. \\[10pt]
 %
-This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. This is a photograph of my webcam setup.
+This configuration can capture images of anything farther than three feet away, and works indoors and outdoors. This is a photograph of my webcam setup.\\
 
-\begin{mdframed}
-\centering
-\includegraphics[width=0.85\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
-\end{mdframed}
+\begin{center}
+\includegraphics[width=0.75\textwidth, trim=30 50 45 50, clip]{images/setup.jpg}
+\end{center}
 
 \end{frame}
 % ................................................
@@ -93,17 +93,15 @@ This configuration can capture images of anything farther than three feet away, 
 \frametitle{Workflow 2: Capture images from stereo webcams (2)}
 
 The figure below shows two images of me in captured from the webcams. 
-This is a picture of me, from about 10 feet away.
+This is a picture of me, from about 10 feet away.\\[20pt]
 
-% \begin{mdframed}
-% \centering
-% \setlength\tabcolsep{0.005\textwidth}
-% \begin{tabular}{cc}
-% \includegraphics[width=0.45\textwidth]{images/l.png} &
-% \includegraphics[width=0.45\textwidth]{images/r.png} \\[2pt]
-% \end{tabular}
-% \label{fig:image1}
-% \end{mdframed}
+\begin{center}
+\setlength\tabcolsep{0.01\textwidth}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{images/l.png} &
+\includegraphics[width=0.45\textwidth]{images/r.png} 
+\end{tabular}
+\end{center}
 
 \end{frame}
 % ................................................
@@ -112,13 +110,10 @@ This is a picture of me, from about 10 feet away.
 % ................................................
 \begin{frame}
 \frametitle{Workflow 3: Split images into 1 pixel high rows and correlate}
+\includegraphics[width=1\textwidth]{images/strips.png} \\[10pt]
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width=1\textwidth]{images/strips.png} \\[2pt]
-\caption[Intensity of the one pixel strips taken from the images in Figure \ref{fig:image1}]{Magnitude of one pixel strips from the images in Figure \ref{fig:image1}. The row from the left image is shown with the blue line, and the row from the right image is shown with the red line. The horizontal axis is the column index from the images shown in Figure \ref{fig:image1}, and the vertical axis is the intensity value at that location. For example, at column 300 the left image intensity (blue line) is approximately 200.}
-\label{fig:strips}
-\end{figure}
+This image shows the magnitude of one pixel strips from the images above.Blue is the left image, red is the right image. About 60 pixels to the right of a feature on the blue line, the feature is repeated on the red line.
+
 \end{frame}
 % ................................................
 
